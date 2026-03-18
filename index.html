@@ -450,10 +450,13 @@ tasks.forEach(t => {
 let uniqueEvents = [...new Set(t.events)];
 let count = uniqueEvents.length;
 
-// TEMP TEST MODE
+if(count >= 3){
 triple.push({...t, type:"triple"});
+}
+else if(count === 2){
 double.push({...t, type:"double"});
-  
+}
+
 });
 
 return {triple, double};
