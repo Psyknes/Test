@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiles Survive Alliance Planner</title>
+  
+<style>
+
+body{
+background:#0b0b0b;
+color:white;
+font-family:system-ui;
+margin:0;
+padding:12px;
+}
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:
+linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)),
+url('tiles-bg.jpg') center top/cover no-repeat;
+
+z-index:-1;
+}
+  
+h1{
+text-align:center;
+color:#ffd54a;
+margin-bottom:6px;
+font-size:26px;
+}
+
+.subtitle{
+text-align:center;
+font-size:13px;
+opacity:.7;
+margin-bottom:16px;
+}
+
+.card{
+background:#151515;
+border-radius:12px;
+padding:14px;
+margin-top:14px;
+}
+
+.card h2{
+margin:0 0 10px 0;
+font-size:18px;
+}
+
+.triple{border-left:5px solid gold;}
+.double{border-left:5px solid #4da6ff;}
+.save{border-left:5px solid #4dff88;}
+
+.row{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:8px 0;
+border-bottom:1px solid #222;
+gap:10px;
+}
+  
+.row:last-child{
+border-bottom:none;
+}
+
+.row span:first-child{
+min-width:45px;
+}
+
+.row span:last-child{
+text-align:right;
+flex:1;
+color:#ffd54a;
+font-size:13px;
+
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;  
+}
+
+.timer{
+text-align:center;
+font-size:22px;
+color:#4da6ff;
+margin-top:6px;
+}
+
+button{
+margin-top:10px;
+width:100%;
+padding:10px;
+border:none;
+border-radius:8px;
+background:#ffd54a;
+color:black;
+font-weight:bold;
+}
+
+.hunterRow{
+display:flex;
+gap:8px;
+margin-top:14px;
+}
+  
+.hunterRow .card{
+flex:1;
+padding:10px;
+}
+
+.hunterRow b{
+font-size:14px;
+}
+
+.hunterRow .timer{
+font-size:18px;
+}
+  
+.hunterRow .card{
+flex:1;
+}
+
+.hunterTriple{
+border-left:6px solid #ffd700;
+background:#1c1a10;
+}
+
+.hunterTriple b{
+color:#ffd700;
+}
+
+.hunterDouble{
+border-left:6px solid #4da6ff;
+background:#141922;
+}
+
+.hunterDouble b{
+color:#6fb6ff;
+}  
+
+.ghoulionCard{
+border-left:6px solid #ff5c5c;
+background:#1b1111;
+}
+
+.ghoulionRow{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.ghoulionIcon{
+width:50px;
+height:50px;
+border-radius:50%;
+}
+
+.ghoulionTitle{
+font-size:16px;
+color:#ff6a6a;
+}
+
+.ghoulionTimer{
+font-size:18px;
+color:#ffd54a;
+margin-top:4px;
+}
+
+.activeBanner{
+background:#ffd700;
+color:black;
+text-align:center;
+font-weight:bold;
+padding:10px;
+border-radius:10px;
+margin-bottom:12px;
+display:none;
+font-size:16px;
+
+box-shadow:0 0 10px rgba(255,215,0,.6),
+           0 0 20px rgba(255,215,0,.4);
+
+animation: bannerPulse 2.5s infinite ease-in-out;
+}
+
+@keyframes bannerPulse{
+
+0%{
+box-shadow:0 0 8px rgba(255,215,0,.5),
+           0 0 14px rgba(255,215,0,.35);
+}
+
+50%{
+box-shadow:0 0 18px rgba(255,215,0,.9),
+           0 0 28px rgba(255,215,0,.6);
+}
+
+100%{
+box-shadow:0 0 8px rgba(255,215,0,.5),
+           0 0 14px rgba(255,215,0,.35);
+}
+
+}
+
+@keyframes emblemGlow{
+0%{
+filter: drop-shadow(0 0 6px rgba(255,215,0,.45))
+        drop-shadow(0 0 10px rgba(77,166,255,.35));
+}
+
+50%{
+filter: drop-shadow(0 0 14px rgba(255,215,0,.75))
+        drop-shadow(0 0 22px rgba(77,166,255,.55));
+}
+
+100%{
+filter: drop-shadow(0 0 6px rgba(255,215,0,.45))
+        drop-shadow(0 0 10px rgba(77,166,255,.35));
+}
+}
+
+.allianceLogo{
+display:block;
+margin:auto;
+height:90px;
+margin-bottom:8px;
+animation: emblemGlow 3.5s infinite ease-in-out;
+}
+
+.todayRow{
+background:#2b2b2b;
+border-left:4px solid #ffd700;
+border-radius:6px;
+box-shadow:0 0 6px rgba(255,215,0,0.4);  
+}
+
+.appContainer{
+max-width:480px;
+margin:auto;
+background:rgba(0,0,0,0.65);
+backdrop-filter: blur(4px);  
+padding:10px;
+border-radius:12px;
+}
+
+@media (max-width: 600px){
+.appContainer{
+max-width:100%;
+}
+
+}  
+  
+</style>
+</head>
+
+<body>
+
+<div class="appContainer"> 
+
+<img src="chillin_logo.png" class="allianceLogo">
+ 
+<h1>Tiles Survive</h1>
+<div class="subtitle">Alliance Event Planner</div>
+<div id="activeBanner" class="activeBanner"></div>
+  
+<div class="card ghoulionCard">
+
+<div class="ghoulionRow">
+
+<img src="ghoulion.png" class="ghoulionIcon">
+
+<div>
+
+<b class="ghoulionTitle">Ghoulion Pursuit</b>
+<div id="ghoulionTimer" class="ghoulionTimer"></div>
+
+</div>
+
+</div>
+
+</div>
+  
+<div class="hunterRow">
+
+<div class="card hunterTriple">
+<b>Task Hunter – Triple Stack</b>
+<div class="timer" id="timer"></div>
+</div>
+
+<div class="card hunterDouble">
+<b>Task Hunter – Double Stack</b>
+<div class="timer" id="doubleTimer"></div>
+</div>
+
+</div>
+  
+<div class="card">
+<h2>📅 Today</h2>
+<div id="todayPanel"></div>
+</div>
+
+<div class="card triple">
+<h2>◆ Triple Stack (Alliance Duel | Turbo Turtle | Power Play)</h2>
+
+<div class="row"><span>Mon</span><span class="time" data-day="1" data-hour="16">Gear Enhancement</span></div>
+<div class="row"><span>Tue</span><span class="time" data-day="2" data-hour="0">Construction Speed Up</span></div>
+<div class="row"><span>Wed</span><span class="time" data-day="3" data-hour="4">Research Speed Up</span></div>  
+<div class="row"><span>Wed</span><span class="time" data-day="3" data-hour="12">Behemoth</span></div>
+<div class="row"><span>Thu</span><span class="time" data-day="4" data-hour="12">Hero Fragments</span></div>
+<div class="row"><span>Fri</span><span class="time" data-day="5" data-hour="12">Construction Speed Up</span></div>
+<div class="row"><span>Sat</span><span class="time" data-day="6" data-hour="16">Research Speed Up</span></div>
+
+</div>
+
+
+<div class="card double">
+<h2>◆ Double Stack (For Rankings)</h2>
+
+<div class="row"><span>Mon</span><span class="time" data-day="1" data-hour="12">Research Speed Up</span></div>
+<div class="row"><span>Tue</span><span class="time" data-day="2" data-hour="12">Gear Enhancement</span></div>
+<div class="row"><span>Wed</span><span class="time" data-day="3" data-hour="4">Research Power Up</span></div>
+<div class="row"><span>Fri</span><span class="time" data-day="5" data-hour="0">Gear Enhancement</span></div>
+<div class="row"><span>Fri</span><span class="time" data-day="5" data-hour="12">Construction Power Up</span></div>
+<div class="row"><span>Sat</span><span class="time" data-day="6" data-hour="8">Construction Speed Up</span></div>
+<div class="row"><span>Sun</span><span class="time" data-day="0" data-hour="0">Hero Fragments</span></div>
+<div class="row"><span>Sun</span><span class="time" data-day="0" data-hour="4">Construction Speed Up</span></div>
+<div class="row"><span>Sun</span><span class="time" data-day="0" data-hour="12">Research Speed Up</span></div>
+<div class="row"><span>Sun</span><span class="time" data-day="0" data-hour="16">Gear Enhancement</span></div>
+<div class="row"><span>Sun</span><span class="time" data-day="0" data-hour="20">Behemoth</span></div>
+
+</div>
+
+
+<div class="card save">
+<h2>◆ Day Exclusive</h2>
+
+<div class="row"><span>Mon | Wed | Fri</span><span>Intel Missions</span></div>
+<div class="row"><span>Wed</span><span>Spend Clash Medals</span></div>
+<div class="row"><span>Thu</span><span>Recruitment</span></div>
+<div class="row"><span>Sat</span><span>Enemy Kills | Eggs | Burrows</span></div>
+<div class="row"><span>Sun</span><span>Kill Infected | Fiends</span></div>
+
+</div>
+
+
+<div class="card save">
+<h2>◆ SAVE Resources</h2>
+
+<div class="row"><span>Research</span><span>Wed | Sat</span></div>
+<div class="row"><span>Construction</span><span>Tue | Fri</span></div>
+<div class="row"><span>Hero Fragments</span><span>Thu</span></div>
+<div class="row"><span>Behemoth</span><span>Wed</span></div>
+<div class="row"><span>Gear Enhancement</span><span>Mon | Tue | Sun</span></div>
+<div class="row"><span>Clash Medals</span><span>Wed</span></div>
+<div class="row"><span>Intel Missions</span><span>Mon | Wed | Fri</span></div>
+<div class="row"><span>Recruitment</span><span>Thu</span></div>
+
+</div>
+
+<div class="card save">
+<h2>⚔️ Last But Not Least</h2>
+
+<div class="row">
+<span>Hero Skill Manuals</span>
+<span>Thu</span>
+</div>
+
+<div class="row">
+<span>Troop Training Power Up</span>
+<span>Sat</span>
+</div>
+
+<div class="row">
+<span>Troop Training Speed Ups</span>
+<span>Sat</span>
+</div>
+
+</div>
+
+<div class="card">
+<h2>🔔 Event Reminder</h2>
+<button onclick="enableNotifications()">Enable Notifications</button>
+</div>
+
+
+<script>
+
+const events=[
+{d:1,h:16,name:"Gear Enhancement"},
+{d:2,h:0,name:"Construction Speed Up"},
+{d:3,h:4,name:"Research Speed Up"},  
+{d:3,h:12,name:"Behemoth"},
+{d:4,h:12,name:"Hero Fragments"},
+{d:5,h:12,name:"Construction Speed Up"},
+{d:6,h:16,name:"Research Speed Up"}
+];
+
+const doubleEvents=[
+{d:1,h:12,name:"Research Speed Up"},
+{d:2,h:12,name:"Gear Enhancement"},
+{d:3,h:4,name:"Research Power Up"},
+{d:5,h:0,name:"Gear Enhancement"},
+{d:5,h:12,name:"Construction Power Up"},
+{d:6,h:8,name:"Construction Speed Up"},
+{d:0,h:0,name:"Hero Fragments"},
+{d:0,h:4,name:"Construction Speed Up"},
+{d:0,h:12,name:"Research Speed Up"},
+{d:0,h:16,name:"Gear Enhancement"},
+{d:0,h:20,name:"Behemoth"}
+];
+  
+function getEventTimes(e){
+
+let eventStart=new Date();
+eventStart.setUTCHours(e.h,0,0,0);
+
+let diff=e.d-eventStart.getUTCDay();
+if(diff<0) diff+=7;
+
+eventStart.setUTCDate(eventStart.getUTCDate()+diff);
+
+let eventEnd=new Date(eventStart);
+eventEnd.setHours(eventEnd.getHours()+4);
+
+return {start:eventStart,end:eventEnd};
+
+}
+
+function highlightTask(){
+
+let now = new Date();
+
+/* ---------- TRIPLE STACK ---------- */
+
+let tripleActive = null;
+let tripleNext = null;
+let tripleNextTime = null;
+
+document.querySelectorAll(".card.triple .time").forEach(el=>{
+
+let day = parseInt(el.dataset.day);
+let hour = parseInt(el.dataset.hour);
+
+let eventStart = new Date();
+eventStart.setUTCHours(hour,0,0,0);
+
+let diff = day - eventStart.getUTCDay();
+if(diff < 0) diff += 7;
+
+eventStart.setUTCDate(eventStart.getUTCDate()+diff);
+
+let eventEnd = new Date(eventStart);
+eventEnd.setHours(eventEnd.getHours()+4);
+
+let row = el.closest(".row");
+
+if(now >= eventStart && now < eventEnd){
+tripleActive = row;
+}
+
+if(eventStart > now){
+if(!tripleNextTime || eventStart < tripleNextTime){
+tripleNextTime = eventStart;
+tripleNext = row;
+}
+}
+
+});
+
+/* clear triple styles */
+document.querySelectorAll(".card.triple .row").forEach(r=>{
+r.style.background="";
+r.style.boxShadow="";
+});
+
+/* apply triple highlight */
+if(tripleActive){
+tripleActive.style.background="#2f2a00";
+tripleActive.style.boxShadow="0 0 8px rgba(255,215,0,0.5)";
+}
+else if(tripleNext){
+tripleNext.style.background="#1a2633";
+tripleNext.style.boxShadow="0 0 6px rgba(77,166,255,0.35)";
+}
+
+
+/* ---------- DOUBLE STACK ---------- */
+
+let doubleActive = null;
+let doubleNext = null;
+let doubleNextTime = null;
+
+document.querySelectorAll(".card.double .time").forEach(el=>{
+
+let day = parseInt(el.dataset.day);
+let hour = parseInt(el.dataset.hour);
+
+let eventStart = new Date();
+eventStart.setUTCHours(hour,0,0,0);
+
+let diff = day - eventStart.getUTCDay();
+if(diff < 0) diff += 7;
+
+eventStart.setUTCDate(eventStart.getUTCDate()+diff);
+
+let eventEnd = new Date(eventStart);
+eventEnd.setHours(eventEnd.getHours()+4);
+
+let row = el.closest(".row");
+
+if(now >= eventStart && now < eventEnd){
+doubleActive = row;
+}
+
+if(eventStart > now){
+if(!doubleNextTime || eventStart < doubleNextTime){
+doubleNextTime = eventStart;
+doubleNext = row;
+}
+}
+
+});
+
+/* clear double styles */
+document.querySelectorAll(".card.double .row").forEach(r=>{
+r.style.background="";
+r.style.boxShadow="";
+});
+
+/* apply double highlight */
+if(doubleActive){
+doubleActive.style.background="#2f2a00";
+doubleActive.style.boxShadow="0 0 8px rgba(255,215,0,0.5)";
+}
+else if(doubleNext){
+doubleNext.style.background="#1a2633";
+doubleNext.style.boxShadow="0 0 6px rgba(77,166,255,0.35)";
+}
+
+}
+
+  
+function convertTimes(){
+
+document.querySelectorAll(".time").forEach(el=>{
+
+let day=parseInt(el.dataset.day);
+let hour=parseInt(el.dataset.hour);
+
+let event=new Date();
+event.setUTCHours(hour,0,0,0);
+
+let diff=day-event.getUTCDay();
+if(diff<0) diff+=7;
+
+event.setUTCDate(event.getUTCDate()+diff);
+
+let local=event.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+el.innerText = local + " — " + el.innerText;
+
+});
+
+}
+  
+function updateTimer(){
+
+let now=new Date();
+let active=null;
+let next=null;
+
+events.forEach(e=>{
+
+let times=getEventTimes(e);
+
+if(now>=times.start && now<times.end){
+active={...times,name:e.name};
+}
+
+if(times.start>now && (!next || times.start<next.start)){
+next={...times,name:e.name};
+}
+
+});
+
+let timer=document.getElementById("timer");
+
+if(active){
+
+let start=active.start.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+let end=active.end.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+timer.innerHTML=
+"<b>⚡ ACTIVE:</b> "+active.name+
+"<br>"+start+" - "+end;
+
+let banner=document.getElementById("activeBanner");
+
+banner.style.display="block";
+banner.innerHTML="⚡ TRIPLE STACK ACTIVE — "+active.name;  
+  
+}else{
+
+document.getElementById("activeBanner").style.display="none";  
+  
+let diff=next.start-now;
+
+let h=Math.floor(diff/1000/60/60);
+let m=Math.floor((diff/1000/60)%60);
+
+timer.innerHTML=
+"Next Triple Stack<br><b>"+next.name+"</b><br>"+h+"h "+m+"m";
+
+}
+
+}
+
+function updateDoubleTimer(){
+
+let now = new Date();
+
+let active = null;
+let next = null;
+
+doubleEvents.forEach(e=>{
+
+let start = new Date();
+start.setUTCHours(e.h,0,0,0);
+
+let diff = e.d - start.getUTCDay();
+if(diff < 0) diff += 7;
+
+start.setUTCDate(start.getUTCDate()+diff);
+
+let end = new Date(start);
+end.setHours(end.getHours()+4);
+
+if(now >= start && now < end){
+active = {start,end,name:e.name};
+}
+
+if(start > now){
+if(!next || start < next.start){
+next = {start,name:e.name};
+}
+}
+
+});
+
+let el = document.getElementById("doubleTimer");
+
+if(active){
+
+let start = active.start.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+let end = active.end.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+el.innerHTML =
+"<b>🔹 ACTIVE:</b> "+active.name+
+"<br>"+start+" - "+end;
+
+}
+else if(next){
+
+let diff = next.start - now;
+
+let h = Math.floor(diff/1000/60/60);
+let m = Math.floor((diff/1000/60)%60);
+
+el.innerHTML =
+"Next: "+next.name+
+"<br>"+h+"h "+m+"m";
+
+}
+else{
+
+el.innerHTML = "No upcoming double stack";
+  
+}
+
+}
+
+setInterval(function(){
+updateTimer();
+updateDoubleTimer();
+highlightTask();
+updateTodayPanel();
+},1000);
+
+convertTimes();  
+updateTimer();
+updateDoubleTimer();  
+highlightTask();
+  
+  
+function updateTodayPanel(){
+
+const now = new Date();
+const today = now.getUTCDay();
+const hour = now.getUTCHours();
+
+let eventText="";
+let taskText="";
+
+switch(today){
+
+case 1: // Monday
+if(hour <16){
+eventText="⭐ Gear Enhancement (16:00 UTC)";
+}
+else if(hour <20){
+eventText="⚡ ACTIVE: Gear Enhancement";
+}
+else{
+eventText="✔ Gear Enhancement completed";
+}
+taskText="• Complete stored Intel Missions<br><small>Tip: On other days DO NOT complete intel missions (except Venture/Triangle Maddie). Let them stack up to ~40.</small>";
+break;
+
+case 2: // Tuesday
+if(hour <4){
+eventText="⚡ ACTIVE: Construction Speed Up";
+}
+else{
+eventText="✔ Construction Speed Up completed";
+}
+taskText="<small>Tip: Do NOT complete intel missions today (except Venture/Triangle Maddie). Let them accumulate.</small>";
+break;
+
+case 3: // Wednesday
+
+let todayEvents = events.filter(e => e.d === 3);
+
+let lines = [];
+
+todayEvents.forEach(e => {
+
+let start = new Date();
+start.setUTCHours(e.h,0,0,0);
+
+let diff = e.d - start.getUTCDay();
+if(diff < 0) diff += 7;
+
+start.setUTCDate(start.getUTCDate()+diff);
+
+let end = new Date(start);
+end.setHours(end.getHours()+4);
+
+if(now >= start && now < end){
+lines.push("⚡ ACTIVE: " + e.name);
+}
+else if(now < start){
+lines.push("⭐ " + e.name + " (" + String(e.h).padStart(2,'0') + ":00 UTC)");
+}
+else{
+lines.push("✔ " + e.name + " completed");
+}
+
+});
+
+eventText = lines.join("<br>");
+
+taskText="• Complete stored Intel Missions<br>• Spend Clash Medals<br><small>Tip: Intel missions should be saved on other days (except Venture/Triangle Maddie).</small>";
+break;
+
+case 4: // Thursday
+if(hour <12){
+eventText="⭐ Hero Fragments (12:00 UTC)";
+}
+else if(hour <16){
+eventText="⚡ ACTIVE: Hero Fragments";
+}
+else{
+eventText="✔ Hero Fragments completed";
+}
+taskText="• Recruitment<br><small>Tip: Continue saving intel missions (except Venture/Triangle Maddie).</small>";
+break;
+
+case 5: // Friday
+if(hour <12){
+eventText="⭐ Construction Speed Up (12:00 UTC)";
+}
+else if(hour <16){
+eventText="⚡ ACTIVE: Construction Speed Up";
+}
+else{
+eventText="✔ Construction Speed Up completed";
+}
+taskText="• Complete stored Intel Missions";
+break;
+
+case 6: // Saturday
+if(hour <16){
+eventText="⭐ Research Speed Up (16:00 UTC)";
+}
+else if(hour <20){
+eventText="⚡ ACTIVE: Research Speed Up";
+}
+else{
+eventText="✔ Research Speed Up completed";
+}
+taskText="• Enemy Kills | Eggs | Burrows<br><small>Tip: Do not complete intel missions today (except Venture/Triangle Maddie).</small>";
+break;
+
+case 0: // Sunday
+eventText="◆ Ranking stacks available";
+taskText="• Kill Infected | Fiends<br><small>Tip: Continue saving intel missions(except Venture/Triangle Maddie).</small>";
+break;
+
+}
+
+document.getElementById("todayPanel").innerHTML =
+eventText+"<br>"+taskText;
+
+}
+
+updateTodayPanel();
+
+const ghoulionStart = new Date("2025-07-19T12:45:00Z");
+const ghoulionInterval = 48 * 60 * 60 * 1000;
+
+function updateGhoulion(){
+
+let now = new Date();
+
+let diff = now - ghoulionStart;
+
+let cycles = Math.floor(diff / ghoulionInterval) + 1;
+
+let next = new Date(ghoulionStart.getTime() + cycles * ghoulionInterval);
+
+let remaining = next - now;
+
+let h = Math.floor(remaining / 1000 / 60 / 60);
+let m = Math.floor((remaining / 1000 / 60) % 60);
+
+let localTime = next.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+let timerText =
+"Next Hunt<br>"+
+localTime+
+"<br><small>("+h+"h "+m+"m)</small>";
+
+if(remaining < 30*60*1000){
+timerText =
+"<b style='color:#ff4d4d'>⚠ PREPARE ALLIANCE</b><br>"+
+localTime+
+"<br><small>("+h+"h "+m+"m)</small>";
+}
+
+document.getElementById("ghoulionTimer").innerHTML = timerText;
+}
+
+setInterval(updateGhoulion,1000);
+updateGhoulion();  
+  
+</script>
+
+</div>
+  
+</body>
+</html>
