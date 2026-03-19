@@ -816,7 +816,7 @@ return;
 
 let task = selected.task;
 let timing = selected.timing;
-let hasPowerPlay = task.events.includes("Power Play");
+let hasPowerPlay = task.events && task.events.includes("Power Play");
 
 if(!hasPowerPlay && task.times.includes("ALL")){
 timer.innerHTML =
@@ -905,9 +905,9 @@ return;
 
 let task = selected.task;
 let timing = selected.timing;
-let hasPowerPlay = task.events.includes("Power Play");  
+let hasPowerPlay = task.events && task.events.includes("Power Play");
 
-if(!hasPowerPlay && task.times.includes("ALL"))
+if(!hasPowerPlay && task.times.includes("ALL")){
 el.innerHTML =
 "<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
 return;
