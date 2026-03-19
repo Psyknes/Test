@@ -329,11 +329,11 @@ color:#6fb6ff;
 }
 
 .eventIcon{
-width:28px;
-height:28px;
+width:20px;
+height:20px;
 border-radius:50%;
 object-fit:cover;
-margin-right:4px;
+margin-right:3px;
 vertical-align:middle;
 }  
   
@@ -623,7 +623,8 @@ date.setUTCDate(date.getUTCDate() + diff);
 
 return date.toLocaleTimeString([],{
 hour:'2-digit',
-minute:'2-digit'
+minute:'2-digit',
+hour12:true
 });
 
 }
@@ -1036,16 +1037,11 @@ let todayTriple = triple.filter(t => t.d === today);
 
 if(todayTriple.length){
 
-html += "<b>◆ Triple Chain</b><br>";
-
-todayTriple.forEach(t => {
+let t = todayTriple[0]; // only show top priority
 
 let timing = getTaskTiming(t);
-
 let status = "";
 
-// Handle ALL DAY tasks
-  
 let hasPowerPlay = t.events.includes("Power Play");
 
 if(hasPowerPlay){
@@ -1056,21 +1052,22 @@ else if(timing.next){
 status = "⭐ Upcoming";
 }
 else{
-status = "<span style='opacity:.6'>✔ Completed</span>";
+status = "✔ Completed";
 }
 }
-else if(t.times.includes("ALL")){
+else{
 status = "⚡ ACTIVE";
 }
-  
+
 let icons = getEventIcons(t.events);
 
 html += `
-<div class="row todayRow">
-<span>${icons} ${t.task}</span>
-<span>${status}</span>
+<div class="row" style="font-size:13px;">
+<span><b>◆ Triple</b> - ${icons} ${t.task}</span>
+<span style="font-size:12px;opacity:.85">${status}</span>
 </div>
 `;
+}
 
 });
 
@@ -1082,39 +1079,32 @@ let todayDouble = double.filter(t => t.d === today);
 
 if(todayDouble.length){
 
-html += "<br><b>◆ Double Chain</b><br>";
-
-todayDouble.forEach(t => {
+let t = todayDouble[0];
 
 let timing = getTaskTiming(t);
-
 let status = "";
 
- 
 if(t.times.includes("ALL")){
 status = "🔹 ACTIVE";
 }
-else if(timing.active){  
+else if(timing.active){
 status = "🔹 ACTIVE";
-}  
+}
 else if(timing.next){
 status = "⭐ Upcoming";
 }
 else{
-status = "<span style='opacity:.6'>✔ Completed</span>";
+status = "✔ Completed";
 }
 
-let icons = getEventIcons(t.events);  
-  
+let icons = getEventIcons(t.events);
+
 html += `
-<div class="row">
-<span>${icons} ${t.task}</span>
-<span>${status}</span>
+<div class="row" style="font-size:13px;">
+<span><b>◆ Double</b> - ${icons} ${t.task}</span>
+<span style="font-size:12px;opacity:.85">${status}</span>
 </div>
 `;
-
-});
-
 }
 
 /* ---------- EMPTY CASE ---------- */
