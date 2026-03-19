@@ -46,13 +46,13 @@ margin-bottom:16px;
 .card{
 background:#151515;
 border-radius:12px;
-padding:14px;
-margin-top:14px;
+padding:10px;
+margin-top:10px;
 }
 
 .card h2{
 margin:0 0 10px 0;
-font-size:18px;
+font-size:var(--title);
 }
 
 .triple{border-left:5px solid gold;}
@@ -63,7 +63,7 @@ font-size:18px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-padding:8px 0;
+padding:6px 0;
 border-bottom:1px solid #222;
 gap:10px;
 }
@@ -80,7 +80,7 @@ min-width:45px;
 text-align:right;
 flex:1;
 color:#ffd54a;
-font-size:13px;
+font-size:var(--main);
 
 white-space: nowrap;
 overflow: hidden;
@@ -236,10 +236,9 @@ animation: emblemGlow 3.5s infinite ease-in-out;
 }
 
 .todayRow{
-background:#2b2b2b;
-border-left:4px solid #ffd700;
-border-radius:6px;
-box-shadow:0 0 6px rgba(255,215,0,0.4);  
+background:transparent;
+border-left:3px solid #ffd700;
+border-radius:4px;
 }
 
 .appContainer{
@@ -263,8 +262,8 @@ font-size:18px;
   
 .hunterUnified{
 padding:6px;
-background:#151515;
-border-radius:12px;
+background:#101010;
+border:1px solid #2a2a2a;
 }
 
 .hunterTitle{
@@ -283,7 +282,7 @@ gap:6px;
 
 .hunterBox{
 flex:1;
-padding:6px 6px;
+padding:4px 4px;
 text-align:center;
 display:flex;
 flex-direction:column;
@@ -355,6 +354,29 @@ border-radius:0;
 padding:2px 0;
 }
 }  
+  
+:root{
+--title:18px;
+--section:15px;
+--main:14px;
+--meta:12px;
+}
+
+.smallText{
+font-size:var(--meta);
+opacity:.75;
+}  
+
+.activeRow{
+background:#2a2410;
+border-left:3px solid #ffd700;
+}
+
+.activeRow .status{
+color:#ffd700;
+font-weight:bold;
+}
+  
   
 </style>
 </head>
@@ -1081,7 +1103,7 @@ status = "⚡ ACTIVE";
 let icons = getEventIcons(t.events);
 
 html += `
-<div class="row" style="font-size:13px;">
+<div class="row ${status.includes('ACTIVE') ? 'activeRow' : ''}" style="font-size:13px;">
 <span><b>◆ Triple</b> - ${icons} ${t.task}</span>
 <span style="font-size:12px;opacity:.85">${status}</span>
 </div>
@@ -1116,7 +1138,7 @@ status = "✔ Completed";
 let icons = getEventIcons(t.events);
 
 html += `
-<div class="row" style="font-size:13px;">
+<div class="row ${status.includes('ACTIVE') ? 'activeRow' : ''}" style="font-size:13px;">
 <span><b>◆ Double</b> - ${icons} ${t.task}</span>
 <span style="font-size:12px;opacity:.85">${status}</span>
 </div>
