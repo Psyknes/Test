@@ -773,9 +773,20 @@ let soonest = null;
 
 triple.forEach(t => {
 
-// ✅ PRIORITY 0 → ALL DAY
-if(t.times.includes("ALL") && !selected){
-selected = {task:t, timing:null};
+// ✅ PRIORITY 0 → POWER PLAY (timed)
+if(t.events.includes("Power Play")){
+let timing = getTaskTiming(t);
+
+if(timing.active && !selected){
+selected = {task:t, timing};
+return;
+}
+
+if(timing.next){
+if(!soonest || timing.next.start < soonest.timing.next.start){
+soonest = {task:t, timing};
+}
+}
 return;
 }
 
@@ -805,8 +816,9 @@ return;
 
 let task = selected.task;
 let timing = selected.timing;
+let hasPowerPlay = task.events.includes("Power Play");
 
-if(task.times.includes("ALL")){
+if(!hasPowerPlay && task.times.includes("ALL")){
 timer.innerHTML =
 "<small>⚡ ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
 return;
@@ -895,7 +907,7 @@ let task = selected.task;
 let timing = selected.timing;
 let hasPowerPlay = task.events.includes("Power Play");  
 
-if(task.times.includes("ALL")){
+if(!hasPowerPlay && task.times.includes("ALL"))
 el.innerHTML =
 "<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
 return;
