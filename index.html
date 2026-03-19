@@ -976,7 +976,7 @@ minute:'2-digit'
 el.innerHTML =
 "<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>"+
 "<small style='opacity:.7'>"+[...new Set(task.events)].join(" | ")+"</small><br>"+
-(hasPowerPlay ? (h+"h "+m+"m") : ("All Day • " + getDayCountdown()));
+(hasPowerPlay ? (start+" - "+end) : ("All Day • " + getDayCountdown()));
 
 }else if(timing.next){
 
@@ -988,7 +988,7 @@ let m = Math.floor((diff/1000/60)%60);
 el.innerHTML =
 "<small>Next</small><br><b>"+task.task+"</b><br>"+
 "<small style='opacity:.7'>"+[...new Set(task.events)].join(" | ")+"</small><br>"+
-(hasPowerPlay ? (h+"h "+m+"m") : "All Day");
+(hasPowerPlay ? (h+"h "+m+"m") : ("All Day • " + getDayCountdown()));
 
 }else{
   
