@@ -327,7 +327,6 @@ color:#ffd700;
 .doubleBox .hunterLabel{
 color:#6fb6ff;
 }
-}  
   
 </style>
 </head>
@@ -932,8 +931,10 @@ let m = Math.floor((diff/1000/60)%60);
 el.innerHTML =
 "<small>Next</small><br><b>"+task.task+"</b> • "+h+"h "+m+"m";
 
-else{
+}else{
+  
 el.innerHTML = "No upcoming tasks";
+  
 }  
 }
 
