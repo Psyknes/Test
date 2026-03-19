@@ -801,7 +801,8 @@ function convertTimes(){
 
 document.querySelectorAll(".time").forEach(el=>{
 
-let day=parseInt(el.dataset.day);
+let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+let day = days.indexOf(el.dataset.day);
 let hour=parseInt(el.dataset.hour);
 
 let event=new Date();
@@ -1089,7 +1090,10 @@ let status = "";
 
 // Handle ALL DAY tasks
   
-if(timing.active){
+if(t.times.includes("ALL")){
+status = "⚡ ACTIVE";
+}
+else if(timing.active){
 status = "⚡ ACTIVE";
 }
 else if(timing.next){
@@ -1098,7 +1102,7 @@ status = "⭐ Upcoming";
 else{
 status = "✔ Completed";
 }
-
+  
 let icons = getEventIcons(t.events);
 
 html += `
@@ -1127,9 +1131,12 @@ let timing = getTaskTiming(t);
 let status = "";
 
  
-if(timing.active){
+if(t.times.includes("ALL")){
 status = "🔹 ACTIVE";
 }
+else if(timing.active){  
+status = "🔹 ACTIVE";
+}  
 else if(timing.next){
 status = "⭐ Upcoming";
 }
