@@ -622,7 +622,7 @@ triple.forEach(t => {
 let row = document.createElement("div");
 row.className = "row";
 
-let day = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][t.d];
+let day = t.d;
 
 row.innerHTML = `
 <span>${day}</span>
@@ -651,7 +651,7 @@ double.forEach(t => {
 let row = document.createElement("div");
 row.className = "row";
 
-let day = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][t.d];
+let day = t.d;
 
 row.innerHTML = `
 <span>${day}</span>
@@ -904,6 +904,12 @@ return;
 let task = selected.task;
 let timing = selected.timing;
 
+if(task.times.includes("ALL")){
+timer.innerHTML =
+"<small>⚡ ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
+return;
+}
+  
 if(timing.active){
 
 let start = timing.active.start.toLocaleTimeString([],{
@@ -981,6 +987,12 @@ let task = selected.task;
 let timing = selected.timing;
 let hasPowerPlay = task.events.includes("Power Play");  
 
+if(task.times.includes("ALL")){
+el.innerHTML =
+"<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
+return;
+}
+  
 if(timing.active){
 
 let start = timing.active.start.toLocaleTimeString([],{
@@ -1076,11 +1088,6 @@ let timing = getTaskTiming(t);
 let status = "";
 
 // Handle ALL DAY tasks
-if(task.times.includes("ALL")){
-timer.innerHTML =
-"<small>⚡ ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
-return;
-}  
   
 if(timing.active){
 status = "⚡ ACTIVE";
@@ -1119,12 +1126,7 @@ let timing = getTaskTiming(t);
 
 let status = "";
 
-if(task.times.includes("ALL")){
-el.innerHTML =
-"<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
-return;
-}
-  
+ 
 if(timing.active){
 status = "🔹 ACTIVE";
 }
