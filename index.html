@@ -234,8 +234,9 @@ filter: drop-shadow(0 0 6px rgba(255,215,0,.45))
 .allianceLogo{
 display:block;
 margin:0;
-height:70px;
+height:80px;
 margin-bottom:8px;
+z-index:2;  
 animation: emblemGlow 3.5s infinite ease-in-out;
 }
 
@@ -383,12 +384,21 @@ opacity:.9;
 }  
 
 .headerBar{
+position:relative;
 display:flex;
 align-items:center;
-gap:10px;
 margin-bottom:10px;
 }
-
+  
+.headerText{
+position:absolute;
+left:50%;
+transform:translateX(-50%);
+text-align:center;
+width:100%;
+pointer-events:none;
+}
+  
 .headerText h1{
 margin:0;
 font-size:20px;
@@ -398,6 +408,10 @@ font-size:20px;
 margin:0;
 font-size:12px;
 opacity:.7;
+}
+
+.headerBar{
+height:50px;
 }
   
 </style>
