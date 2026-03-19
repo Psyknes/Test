@@ -832,6 +832,8 @@ let next = null;
 
 task.times.forEach(h => {
 
+if(h === "ALL") return; // ✅ skip all-day tasks
+
 let start = new Date();
 start.setUTCHours(h,0,0,0);
 
@@ -1050,7 +1052,8 @@ highlightTask();
 function updateTodayPanel(){
 
 let now = new Date();
-let today = now.getUTCDay();
+let days = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+let today = days[now.getUTCDay()];
 
 let {triple, double} = classifyTasks();
 
@@ -1072,6 +1075,13 @@ let timing = getTaskTiming(t);
 
 let status = "";
 
+// Handle ALL DAY tasks
+if(task.times.includes("ALL")){
+timer.innerHTML =
+"<small>⚡ ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
+return;
+}  
+  
 if(timing.active){
 status = "⚡ ACTIVE";
 }
@@ -1109,6 +1119,12 @@ let timing = getTaskTiming(t);
 
 let status = "";
 
+if(task.times.includes("ALL")){
+el.innerHTML =
+"<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>All Day";
+return;
+}
+  
 if(timing.active){
 status = "🔹 ACTIVE";
 }
