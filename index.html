@@ -750,78 +750,19 @@ el.innerText = local + " — " + el.innerText;
 
 }
   
-function updateTimer(){
-
-let now=new Date();
-let active=null;
-let next=null;
-
-events.forEach(e=>{
-
-let times=getEventTimes(e);
-
-if(now>=times.start && now<times.end){
-active={...times,name:e.name};
-}
-
-if(times.start>now && (!next || times.start<next.start)){
-next={...times,name:e.name};
-}
-
-});
-
-let timer=document.getElementById("timer");
-
-if(active){
-
-let start=active.start.toLocaleTimeString([],{
-hour:'2-digit',
-minute:'2-digit'
-});
-
-let end=active.end.toLocaleTimeString([],{
-hour:'2-digit',
-minute:'2-digit'
-});
-
-timer.innerHTML=
-"<small>⚡ ACTIVE</small><br><b>"+active.name+"</b>"+
-"<br>"+start+" - "+end;
-
-let banner=document.getElementById("activeBanner");
-
-banner.style.display="block";
-banner.innerHTML="⚡ TRIPLE STACK ACTIVE — "+active.name;  
-  
-}else{
-
-document.getElementById("activeBanner").style.display="none";  
-  
-let diff=next.start-now;
-
-let h=Math.floor(diff/1000/60/60);
-let m=Math.floor((diff/1000/60)%60);
-
-timer.innerHTML=
-"<small>Next</small><br><b>"+next.name+"</b> • "+h+"h "+m+"m";
-
-}
-
-}
-
-function updateDoubleTimer(){
+function getTaskTiming(task){
 
 let now = new Date();
 
 let active = null;
 let next = null;
 
-doubleEvents.forEach(e=>{
+task.times.forEach(h => {
 
 let start = new Date();
-start.setUTCHours(e.h,0,0,0);
+start.setUTCHours(h,0,0,0);
 
-let diff = e.d - start.getUTCDay();
+let diff = task.d - start.getUTCDay();
 if(diff < 0) diff += 7;
 
 start.setUTCDate(start.getUTCDate()+diff);
@@ -830,54 +771,116 @@ let end = new Date(start);
 end.setHours(end.getHours()+4);
 
 if(now >= start && now < end){
-active = {start,end,name:e.name};
+active = {start,end};
 }
 
 if(start > now){
 if(!next || start < next.start){
-next = {start,name:e.name};
+next = {start};
 }
 }
 
 });
 
-let el = document.getElementById("doubleTimer");
+return {active,next};
 
-if(active){
+}
+  
+function updateTimer(){
 
-let start = active.start.toLocaleTimeString([],{
+let {triple} = classifyTasks();
+
+let timer = document.getElementById("timer");
+
+if(triple.length === 0){
+timer.innerHTML = "No triple tasks";
+return;
+}
+
+let task = triple[0]; // highest priority (for now)
+
+let timing = getTaskTiming(task);
+
+if(timing.active){
+
+let start = timing.active.start.toLocaleTimeString([],{
 hour:'2-digit',
 minute:'2-digit'
 });
 
-let end = active.end.toLocaleTimeString([],{
+let end = timing.active.end.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+timer.innerHTML =
+"<small>⚡ ACTIVE</small><br><b>"+task.task+"</b><br>"+start+" - "+end;
+
+}else if(timing.next){
+
+let diff = timing.next.start - new Date();
+
+let h = Math.floor(diff/1000/60/60);
+let m = Math.floor((diff/1000/60)%60);
+
+timer.innerHTML =
+"<small>Next</small><br><b>"+task.task+"</b> • "+h+"h "+m+"m";
+
+}else{
+
+timer.innerHTML = "No upcoming tasks";
+
+}
+
+}
+
+function updateDoubleTimer(){
+
+let {double} = classifyTasks();
+
+let el = document.getElementById("doubleTimer");
+
+if(double.length === 0){
+el.innerHTML = "No double tasks";
+return;
+}
+
+let task = double[0];
+
+let timing = getTaskTiming(task);
+
+if(timing.active){
+
+let start = timing.active.start.toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+});
+
+let end = timing.active.end.toLocaleTimeString([],{
 hour:'2-digit',
 minute:'2-digit'
 });
 
 el.innerHTML =
-"<small>🔹 ACTIVE</small><br><b>"+active.name+"</b><br>"+start+" - "+end;
+"<small>🔹 ACTIVE</small><br><b>"+task.task+"</b><br>"+start+" - "+end;
 
-}
-else if(next){
+}else if(timing.next){
 
-let diff = next.start - now;
+let diff = timing.next.start - new Date();
 
 let h = Math.floor(diff/1000/60/60);
 let m = Math.floor((diff/1000/60)%60);
 
- el.innerHTML =
-"<small>Next</small><br><b>"+next.name+"</b> • "+h+"h "+m+"m"; 
+el.innerHTML =
+"<small>Next</small><br><b>"+task.task+"</b> • "+h+"h "+m+"m";
 
-}
-else{
+}else{
 
-el.innerHTML = "No upcoming double stack";
-  
-}
+el.innerHTML = "No upcoming tasks";
 
 }
 
+}
 setInterval(function(){
 
 renderTriple();
