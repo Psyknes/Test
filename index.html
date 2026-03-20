@@ -1407,7 +1407,7 @@ container.innerHTML = html;
 
 updateTodayPanel();
 
-const ghoulionStart = new Date("2025-07-19T12:45:00Z");
+const ghoulionStart = new Date(Date.now() - (5 * 60 * 1000));
 const ghoulionInterval = 48 * 60 * 60 * 1000;
   
 function updateGhoulion(){
