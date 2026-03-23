@@ -511,6 +511,28 @@ animation: heatPulse 1.5s ease-in-out infinite;
 50%{box-shadow:0 0 16px rgba(255,140,0,0.9);}
 100%{box-shadow:0 0 6px rgba(255,140,0,0.4);}
 }
+
+.lightning{
+position:fixed;
+width:40px;
+height:40px;
+background: radial-gradient(circle, white 0%, cyan 40%, transparent 70%);
+pointer-events:none;
+transform: translate(-50%, -50%);
+animation: flash 0.3s ease-out;
+z-index:9999;
+}
+
+@keyframes flash{
+0%{
+transform: translate(-50%, -50%) scale(0.5);
+opacity:1;
+}
+100%{
+transform: translate(-50%, -50%) scale(2);
+opacity:0;
+}
+}  
   
 </style>
 </head>
@@ -1524,7 +1546,22 @@ el.innerHTML =
 updateGhoulion();
 
 setInterval(updateGhoulion, 1000); 
-  
+document.addEventListener("click", function(e){
+
+let bolt = document.createElement("div");
+
+bolt.className = "lightning";
+bolt.style.left = e.clientX + "px";
+bolt.style.top = e.clientY + "px";
+
+document.body.appendChild(bolt);
+
+// remove after animation
+setTimeout(function(){
+bolt.remove();
+}, 300);
+
+});  
 </script>
 
 </div>
