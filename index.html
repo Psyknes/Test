@@ -542,12 +542,21 @@ height:100%;
 pointer-events:none;
 z-index:9998;
 }  
+#pet{
+position:fixed;
+bottom:20px;
+left:20px;
+width:80px;
+z-index:9999;
+cursor:pointer;
+transition: transform 0.3s;
+}
   
 </style>
 </head>
 
 <body>
-
+<img id="pet" src="https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif">
 <div class="appContainer"> 
 
 <div class="headerBar">
@@ -1679,7 +1688,29 @@ ctx.clearRect(0,0,canvas.width,canvas.height);
 document.addEventListener("click", function(e){
 drawLightning(e.clientX, e.clientY);
 });  
-  
+const pet = document.getElementById("pet");
+
+// 🐾 move randomly every few seconds
+setInterval(function(){
+
+let x = Math.random() * (window.innerWidth - 100);
+let y = Math.random() * (window.innerHeight - 100);
+
+pet.style.left = x + "px";
+pet.style.top = y + "px";
+
+}, 4000);
+
+// 🐾 click reaction
+pet.addEventListener("click", function(){
+
+pet.style.transform = "scale(1.3)";
+
+setTimeout(()=>{
+pet.style.transform = "scale(1)";
+}, 300);
+
+});  
 </script>
 
 </div>
