@@ -1572,8 +1572,62 @@ bolt.remove();
 
 }); 
 
+window.addEventListener("load", function(){
+
 const canvas = document.getElementById("lightningCanvas");
 const ctx = canvas.getContext("2d");
+
+// resize canvas
+function resizeCanvas(){
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+// ⚡ lightning function
+function drawLightning(x, y){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+for(let i=0;i<5;i++){
+
+ctx.beginPath();
+ctx.moveTo(x, y);
+
+let currentX = x;
+let currentY = y;
+
+for(let j=0;j<10;j++){
+
+currentX += (Math.random() - 0.5) * 100;
+currentY += Math.random() * 80;
+
+ctx.lineTo(currentX, currentY);
+
+}
+
+ctx.strokeStyle = "cyan";
+ctx.lineWidth = 2;
+ctx.shadowBlur = 10;
+ctx.shadowColor = "cyan";
+
+ctx.stroke();
+
+}
+
+setTimeout(()=>{
+ctx.clearRect(0,0,canvas.width,canvas.height);
+}, 200);
+
+}
+
+// attach click
+document.addEventListener("click", function(e){
+drawLightning(e.clientX, e.clientY);
+});
+
+});
 
 // resize canvas to screen
 function resizeCanvas(){
